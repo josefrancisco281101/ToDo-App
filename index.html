@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Link to Script -->
+  <script src="./main.js" defer></script>
+  <script src="https://kit.fontawesome.com/6a276b5956.js" crossorigin="anonymous"></script>
+
+  <!-- Link to CSS -->
+  <link rel="stylesheet" href="./style.css">
+  <title>To-Do App</title>
+</head>
+
+<body>
+  <div class="container">
+    <h1>#todo</h1>
+
+
+    <nav>
+      <button id="all" class="active">All</button>
+      <button id="active">Active</button>
+      <button id="completed">Completed</button>
+
+    </nav>
+
+    <form id="form">
+      <input type="text" id="input" placeholder="add details">
+      <button type="submit" id="button">Add</button>
+    </form>
+
+    <ul id="showTasks">
+      <li>
+        <label for="inputCheck">
+          <input type="checkbox" name="" id="inputCheck">
+          Debo terminar mi proyecto final
+        </label>
+        <!-- <button></button> -->
+
+      </li>
+
+    </ul>
+    <div class="deleteAll">
+      <button id="deleteAll"><i class="fa-solid fa-trash"></i> delete all</button>
+    </div>
+  </div>
+</body>
+
+</html>
