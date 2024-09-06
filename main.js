@@ -1,14 +1,3 @@
-/* Los siguientes nombres de funciones son una sugerencia de funciones que necesitarás en tu programa,
-sin embargo, no te limites solo a estas funciones. Crea tantas como consideres necesarias.
-
-La estructura de cada objeto "tarea" es la siguiente:
-
-{
-  id: 1,
-  title: "tarea",
-  completed: false
-}
-*/
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("#form");
   const input = document.querySelector("#input");
@@ -21,6 +10,19 @@ document.addEventListener("DOMContentLoaded", () => {
   let taskId = 0;
   let tasks = [];
   let currentView = "all";
+
+  function loadTasksFromLocalStorage() {
+    const storedTasks = localStorage.getItem("tasks");
+    if (storedTasks) {
+      tasks = JSON.parse(storedTasks);
+      taskId = tasks.length ? tasks[tasks.length - 1].id : 0; 
+    }
+    updateDOM();
+  }
+
+  function saveTasksToLocalStorage() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -35,11 +37,12 @@ document.addEventListener("DOMContentLoaded", () => {
       tasks.push(task);
       create_task(task, showTasks);
       input.value = "";
+      saveTasksToLocalStorage(); 
       updateDOM();
     }
   });
 
-  // Función para añadir una nueva tarea
+  
   function create_task({ id, title, completed }, list) {
     const li = document.createElement("li");
     li.innerHTML = `
@@ -76,27 +79,30 @@ document.addEventListener("DOMContentLoaded", () => {
     list.appendChild(li);
   }
 
-  // Función para marcar una tarea como completada o incompleta
+ 
   function completeTask(id, isCompleted) {
     const taskIndex = tasks.findIndex((task) => task.id === id);
     if (taskIndex > -1) {
       tasks[taskIndex].completed = isCompleted;
+      saveTasksToLocalStorage(); 
       updateDOM();
     }
   }
 
-  // Función para borrar una tarea
+  
   function deleteTask(id) {
     tasks = tasks.filter((task) => task.id !== id);
+    saveTasksToLocalStorage(); 
     updateDOM();
   }
 
   function deleteCompletedTasks() {
     tasks = tasks.filter((task) => !task.completed);
+    saveTasksToLocalStorage(); 
     updateDOM();
   }
 
-  // Función para mostrar tareas en el DOM
+ 
   function showTasksInDOM(tasksToShow) {
     showTasks.innerHTML = "";
     tasksToShow.forEach((task) => {
@@ -104,8 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Función para actualizar el DOM según la vista actual
-  function updateDOM() {
+    function updateDOM() {
     if (currentView === "all") {
       showTasksInDOM(tasks);
       deleteAll.style.display = "none";
@@ -120,34 +125,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Función para filtrar tareas completadas
+ 
   function filterCompleted() {
     currentView = "completed";
     updateDOM();
   }
 
-  // Función para filtrar tareas incompletas
+  
   function filterUncompleted() {
     currentView = "active";
     updateDOM();
   }
 
-  // Mostrar todas las tareas
+ 
   function showAllTasks() {
     currentView = "all";
     updateDOM();
   }
 
-  // Función para manejar la activación de botones
-  function activateButton(button) {
+    function activateButton(button) {
     all.classList.remove("active");
     active.classList.remove("active");
     completed.classList.remove("active");
     button.classList.add("active");
   }
 
-  // Event listeners para los botones de filtro
-  all.addEventListener("click", () => {
+   all.addEventListener("click", () => {
     activateButton(all);
     showAllTasks();
     form.style.display = "block";
@@ -165,34 +168,8 @@ document.addEventListener("DOMContentLoaded", () => {
     form.style.display = "none";
   });
 
-  // Leer las tareas preexistentes en el DOM y agregarlas a la lista de tareas
-  document.querySelectorAll("#showTasks li").forEach((li) => {
-    const checkbox = li.querySelector('input[type="checkbox"]');
-    const title = li.textContent.trim();
-    const completed = checkbox.checked;
-
-    taskId++;
-    const task = {
-      id: taskId,
-      title: title,
-      completed: completed,
-    };
-    tasks.push(task);
-
-    // Añadir event listeners a las tareas preexistentes
-    checkbox.addEventListener("change", (event) => {
-      completeTask(task.id, event.target.checked);
-    });
-
-    const deleteBtn = li.querySelector(".delete-btn");
-    if (deleteBtn) {
-      deleteBtn.addEventListener("click", () => {
-        deleteTask(task.id);
-      });
-    }
-  });
-
   deleteAll.addEventListener("click", deleteCompletedTasks);
 
-  updateDOM();
+ 
+  loadTasksFromLocalStorage();
 });
